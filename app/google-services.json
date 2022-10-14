@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "171659501555",
+    "project_id": "mad-assignment-2-part-b-ae770",
+    "storage_bucket": "mad-assignment-2-part-b-ae770.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171659501555:android:ff88b4ded8e59e0c4e3c86",
+        "android_client_info": {
+          "package_name": "au.edu.curtin.reactiveandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171659501555-iupn69t1ee9ndb3s6dgd858e1e9c85vj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyyu6JzsIWK0V-c_xAHhW0XwWKN8TEJ-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171659501555-iupn69t1ee9ndb3s6dgd858e1e9c85vj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
