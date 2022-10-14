@@ -1,6 +1,7 @@
 package au.edu.curtin.reactiveandroid.controllers
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import kotlin.math.log
 
@@ -9,6 +10,7 @@ class ImagesController {
     private var imagesList = ArrayList<Bitmap>()
     private var toUploadList = ArrayList<Bitmap>()
     private var selectedPositions = ArrayList<Int>()
+    private var imageUris = ArrayList<Uri>()
 
     fun addImage(image: Bitmap) {
         this.imagesList.add(image)
@@ -44,5 +46,13 @@ class ImagesController {
 
     fun getSelectedPositions(): ArrayList<Int> {
         return this.selectedPositions
+    }
+
+    fun addImageUri(uri: Uri) {
+        this.imageUris.add(uri)
+    }
+
+    fun getImageURIs(): ArrayList<Uri> {
+        return this.imageUris
     }
 }

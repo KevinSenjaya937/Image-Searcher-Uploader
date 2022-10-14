@@ -2,6 +2,7 @@ package au.edu.curtin.reactiveandroid
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.Image
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import au.edu.curtin.reactiveandroid.controllers.ImagesController
 import au.edu.curtin.reactiveandroid.fragments.OneColFragment
 import au.edu.curtin.reactiveandroid.fragments.TwoColFragment
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         storage = FirebaseStorage.getInstance()
         storageReference = storage.reference
-
+        checkStoragePermissions()
         loadImageBtn = findViewById(R.id.loadImageBtn)
         changeViewBtn = findViewById(R.id.changeViewBtn)
         uploadBtn = findViewById(R.id.uploadBtn)
@@ -72,6 +74,9 @@ class MainActivity : AppCompatActivity() {
 
         uploadBtn.setOnClickListener {
             saveImages()
+            for (uri in imageController.getImageURIs()) {
+                uploadImages(uri)
+            }
         }
     }
 
@@ -152,23 +157,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun uploadImages() {
+    fun uploadImages(imageUri: Uri) {
 
-        val imagesList = imageController.getToUploadList()
-        val outputStream = ByteArrayOutputStream()
-        for (image in imagesList) {
-            var imageReference = storageReference.child(image.toString())
-
-            image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            val data = outputStream.toByteArray()
-
-            var uploadTask = imageReference.putBytes(data)
-            uploadTask.addOnFailureListener {
-                Toast.makeText(this@MainActivity, "Image Upload Failed", Toast.LENGTH_SHORT).show()
-            }.addOnSuccessListener {
-                Toast.makeText(this@MainActivity, "Image Upload Success", Toast.LENGTH_SHORT).show()
-            }
-
+        if (imageUri != null) {
+            val imageRef = storageReference.child("gs://mad-assignment-2-part-b-ae770.appspot.com").child(
+                imageUri.lastPathSegment.toString()
+            )
+            imageRef.putFile(imageUri)
+                .addOnSuccessListener {
+                    Toast.makeText(this@MainActivity, "Image Uploaded", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this@MainActivity, "Image Upload Failed", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 
@@ -191,7 +191,9 @@ class MainActivity : AppCompatActivity() {
 
             val uri: Uri? = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             Log.d("KEVINTEST", uri.toString())
+
             if (uri != null) {
+                imageController.addImageUri(uri)
                 saveImageToStream(bitmap, context.contentResolver.openOutputStream(uri))
                 values.put(MediaStore.Images.Media.IS_PENDING, false)
                 context.contentResolver.update(uri, values, null, null)
@@ -234,6 +236,12 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    private fun checkStoragePermissions() {
+        if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 105)
         }
     }
 }
